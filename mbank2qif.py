@@ -44,7 +44,14 @@ with nested(open(sys.argv[1], 'r'), open(sys.argv[2], 'w')) as (input, output):
             date = props[1]
             d, m, y = date.split('-')
             outputwriter.write(u"D%s/%s/%s\n" % (m, d, y))
-            outputwriter.write(u"T%s\n" % props[6].replace(',','.'))
-            outputwriter.write(u"M%s\n" % props[2][1:-1].strip())
+            outputwriter.write(u"T%s\n" % props[9].replace(',','.'))
+            trans_type =  props[2].replace('\'','').replace('"','').strip()
+            trans_desc =  props[3].replace('\'','').replace('"','').strip()
+            trans_target =  props[4].replace('\'','').replace('"','').strip()
+            trans_acc =  props[5].replace('\'','').replace('"','').strip()
+            outputwriter.write(u"M%s %s %s %s\n" %  (trans_type,
+                                                        trans_desc,
+                                                        trans_target,
+                                                        trans_acc) )
             outputwriter.write(u'^\n')
 
