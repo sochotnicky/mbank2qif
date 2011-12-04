@@ -21,6 +21,14 @@ import codecs
 import csv
 import argparse
 
+class TransactionData(object):
+    """Simple class to hold information about a transaction"""
+    def __init__(self, date, amount, destination=None, message=None):
+        self.date = date
+        self.amount = amount
+        self.destination = destination
+        self.message = message
+
 def unicode_csv_reader(unicode_csv_data, dialect=csv.excel, **kwargs):
     # csv.py doesn't do Unicode; encode temporarily as UTF-8:
     csv_reader = csv.reader(utf_8_encoder(unicode_csv_data),
@@ -63,6 +71,24 @@ def convert(infile, outfile):
                                                             trans_target,
                                                             trans_acc) )
                 outputwriter.write(u'^\n')
+
+def write_qif(outfile, transactions):
+    with open(outfile, 'w') as output:
+        writer = codecs.getwriter("utf-8")
+        outputwriter = writer(output)
+        outputwriter.write("!Type:Bank\n")
+        for transaction in transactions:
+            d, m, y = transaction.date.day,\
+                      transaction.date.monty,\
+                      transaction.date.year
+            outputwriter.write(u"D%s/%s/%s\n" % (m, d, y))
+            outputwriter.write(u"T%s\n" % transaction.amount)
+            outputwriter.write(u"M%s\n" % transaction.message)
+
+
+
+
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Bank statement to QIF file converter')
